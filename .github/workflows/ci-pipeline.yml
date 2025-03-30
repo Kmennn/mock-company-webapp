@@ -1,4 +1,4 @@
-name: Java CI Build and Test (Simulated Jenkins)
+name: Java CI Build and Test
 
 # Trigger this workflow on every push to any branch
 on: [push]
@@ -9,21 +9,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository code so the workflow can access it
+      # Step 1: Check out the repository code
       - name: Checkout Repository
-        uses: actions/checkout@v4 # Use a recent version
+        uses: actions/checkout@v4
 
-      # Step 2: Set up JDK 8, which is required by this project
+      # Step 2: Set up JDK 8
       - name: Set up JDK 8
-        uses: actions/setup-java@v4 # Use a recent version
+        uses: actions/setup-java@v4
         with:
-          java-version: '8'        # Specify Java 8
-          distribution: 'temurin'  # Specify distribution (Adoptium Temurin is common)
-          cache: 'gradle'          # Cache Gradle dependencies
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'gradle'
 
-      # Step 3: Simulate Jenkins using Jenkinsfile Runner Action
-      # This action executes the steps defined in your Jenkinsfile
-      - name: Run Jenkinsfile Pipeline
-        uses: jenkins-infra/jenkinsfile-runner-github-action@v2.4.0 # Try specific older version tagCorrected version
-        with:
-          jenkinsfilePath: Jenkinsfile # Tell the action where your Jenkinsfile is located
+      # Step 3: Grant execute permission for gradlew (important on Linux runners)
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Step 4: Build the application with Gradle wrapper
+      - name: Build with Gradle
+        # Run the assemble task as required by Jenkinsfile Stage 'Build'
+        run: ./gradlew assemble
+
+      # Step 5: Test the application with Gradle wrapper
+      - name: Test with Gradle
+        # Run the test task as required by Jenkinsfile Stage 'Test'
+        run: ./gradlew test
