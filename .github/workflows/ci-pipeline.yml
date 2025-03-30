@@ -35,3 +35,15 @@ jobs:
       # Step below was Step 5, now Step 6
       - name: Test with Gradle
         run: ./gradlew test
+
+        cache: 'yarn'            # Cache yarn dependencies
+        # *** ADD THIS LINE ***
+        cache-dependency-path: client-app/yarn.lock # Specify path to lock file for caching
+
+              # Set up Node.js 16
+      - name: Set up Node.js 16
+      uses: actions/setup-node@v4
+      with:
+        node-version: 16
+        cache: 'yarn'
+        cache-dependency-path: client-app/yarn.lock # Tell cache where yarn.lock is
