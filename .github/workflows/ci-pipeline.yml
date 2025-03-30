@@ -24,7 +24,6 @@ jobs:
       # Step 3: Simulate Jenkins using Jenkinsfile Runner Action
       # This action executes the steps defined in your Jenkinsfile
       - name: Run Jenkinsfile Pipeline
-        # Use a specific, known-good version tag like v2.5.0
-        uses: jenkins-infra/jenkinsfile-runner-github-action@v2.5.0 # Corrected version
+        uses: jenkins-infra/jenkinsfile-runner-github-action@v2.4.0 # Try specific older version tagCorrected version
         with:
           jenkinsfilePath: Jenkinsfile # Tell the action where your Jenkinsfile is located
