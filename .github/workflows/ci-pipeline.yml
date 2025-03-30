@@ -1,15 +1,19 @@
 name: Java CI Build and Test
 
+# Trigger this workflow on every push to any branch
 on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Use the latest Ubuntu runner provided by GitHub
+    runs-on: ubuntu-latest # This was reported as line 9
 
     steps:
+      # Step 1: Check out the repository code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Step 2: Set up JDK 8
       - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:
@@ -17,33 +21,22 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # *** ADD THIS NEW STEP ***
-      - name: Set up Node.js 16 # Use Node.js version 16
-        uses: actions/setup-node@v4 # Use Node setup action
+      # Step 3: Set up Node.js 16
+      - name: Set up Node.js 16
+        uses: actions/setup-node@v4
         with:
-          node-version: 16       # Specify version 16
-          cache: 'yarn'          # Cache yarn dependencies
+          node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: client-app/yarn.lock # Specify path to lock file for caching
 
-      # Step below was Step 3, now Step 4
+      # Step 4: Grant execute permission for gradlew (important on Linux runners)
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # Step below was Step 4, now Step 5
+      # Step 5: Build the application with Gradle wrapper
       - name: Build with Gradle
         run: ./gradlew assemble
 
-      # Step below was Step 5, now Step 6
+      # Step 6: Test the application with Gradle wrapper
       - name: Test with Gradle
         run: ./gradlew test
-
-        cache: 'yarn'            # Cache yarn dependencies
-        # *** ADD THIS LINE ***
-        cache-dependency-path: client-app/yarn.lock # Specify path to lock file for caching
-
-              # Set up Node.js 16
-      - name: Set up Node.js 16
-      uses: actions/setup-node@v4
-      with:
-        node-version: 16
-        cache: 'yarn'
-        cache-dependency-path: client-app/yarn.lock # Tell cache where yarn.lock is
